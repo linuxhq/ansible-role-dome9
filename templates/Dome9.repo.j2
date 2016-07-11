@@ -1,0 +1,14 @@
+[Dome9]
+name=Dome9 Repository
+baseurl=http://repository.dome9.com/centos/$releasever/
+{% if dome9_repos.Dome9 is defined %}
+{%   if dome9_repos.Dome9 %}
+enabled=1
+{%   else %}
+enabled=0
+{%   endif %}
+{% else %}
+enabled=0
+{% endif %}
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-dome9.com

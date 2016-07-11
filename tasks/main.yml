@@ -1,0 +1,46 @@
+---
+- name: Assert that prerequisites exist
+  tags: dome9-release
+  assert:
+    that:
+      - dome9_pkg is defined
+      - dome9_ver is defined
+      - dome9_rel is defined
+      - dome9_baseurl is defined
+
+- name: Execute mktemp
+  tags: dome9-release
+  command: mktemp -u --suffix .rpm
+  register: dome9_mktemp
+
+- name: Create temporary package
+  tags: dome9-release
+  get_url: url={{ dome9_fetch }}
+           dest={{ dome9_mktemp.stdout }}
+  register: dome9_get_url
+  when: dome9_mktemp|success
+
+- name: Install dome9-release
+  tags: dome9-release
+  yum: name={{ item }}
+       state=present
+  register: dome9_yum
+  with_items: "{{ dome9_mktemp.stdout }}"
+  when: dome9_get_url|success
+
+- name: Configure Dome9.repo
+  tags: dome9-release
+  template: src=Dome9.repo.j2
+            dest=/etc/yum.repos.d/Dome9.repo
+            owner=root
+            group=root
+            mode=0644
+  when: dome9_yum|success
+
+- name: Erase temporary package
+  tags: dome9-release
+  file: path={{ dome9_mktemp.stdout }}
+        state=absent
+  when:
+    - dome9_mktemp|success
+    - dome9_yum|success
