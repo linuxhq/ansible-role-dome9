@@ -13,6 +13,5 @@ galaxy_info:
         - 7
   galaxy_tags:
     - dome9
-    - firewall
-    - monitoring
-    - security
+    - packaging
+    - system
