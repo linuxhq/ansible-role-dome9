@@ -19,10 +19,7 @@ Available variables are listed below, along with default values:
     dome9_baseurl: "http://repository.dome9.com/centos/5/{{ dome9_arch }}"
     dome9_release: "{{ dome9_pkg }}-{{ dome9_ver }}-{{ dome9_rel }}"
     dome9_fetch: "{{ dome9_baseurl }}/{{ dome9_release }}.{{ dome9_arch }}.rpm"
-    dome9_repos:
-      Dome9: False
-
-All repositories are disabled by default.
+    dome9_dome9: True
 
 ## Dependencies
 
@@ -33,8 +30,7 @@ None
     - hosts: servers
       roles:
         - role: linuxhq.dome9
-          dome9_repos:
-            Dome9: True
+          dome9_dome9: True
 
 ## License
 

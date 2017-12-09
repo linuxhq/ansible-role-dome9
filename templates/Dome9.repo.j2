@@ -1,6 +1,6 @@
 [Dome9]
 name=Dome9 Repository
 baseurl=http://repository.dome9.com/centos/$releasever/
-enabled={{ '1' if dome9_repos.Dome9 is defined and dome9_repos.Dome9 else '0' }}
+enabled={{ '1' if dome9_dome9 is defined and dome9_dome9 else '0' }}
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-dome9.com
