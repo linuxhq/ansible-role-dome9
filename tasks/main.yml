@@ -1,6 +1,6 @@
 ---
-- name: Assert that prerequisites exist
-  tags: dome9-release
+- name: Assert that the prerequisites are defined
+  tags: dome9
   assert:
     that:
       - dome9_pkg is defined
@@ -8,39 +8,53 @@
       - dome9_rel is defined
       - dome9_baseurl is defined
 
-- name: Execute mktemp
-  tags: dome9-release
+- name: Generating temporary filename via mktemp
+  tags: dome9
   command: mktemp -u --suffix .rpm
   register: dome9_mktemp
 
-- name: Create temporary package
-  tags: dome9-release
-  get_url: url={{ dome9_fetch }}
-           dest={{ dome9_mktemp.stdout }}
+- name: Downloading package to temporary location
+  tags: dome9
+  get_url:
+    dest: "{{ dome9_mktemp.stdout }}"
+    url: "{{ dome9_fetch }}"
   register: dome9_get_url
   when: dome9_mktemp|success
 
-- name: Install dome9-release
-  tags: dome9-release
-  yum: name={{ item }}
-       state=present
+- name: Ensure that the dome9 package is installed
+  tags: dome9
+  become: true
+  yum:
+    name: "{{ item }}"
+    state: present
   register: dome9_yum
   with_items: "{{ dome9_mktemp.stdout }}"
   when: dome9_get_url|success
 
-- name: Configure Dome9.repo
-  tags: dome9-release
-  template: src=Dome9.repo.j2
-            dest=/etc/yum.repos.d/Dome9.repo
-            owner=root
-            group=root
-            mode=0644
+- name: Applying Dome9.repo configurations
+  tags: dome9
+  become: true
+  template:
+    src: Dome9.repo.j2
+    dest: /etc/yum.repos.d/Dome9.repo
+    owner: root
+    group: root
+    mode: 0644
   when: dome9_yum|success
 
-- name: Erase temporary package
-  tags: dome9-release
-  file: path={{ dome9_mktemp.stdout }}
-        state=absent
+- name: Ensure that the Dome9 GPG keys are installed
+  tags: dome9
+  become: true
+  rpm_key:
+    key: /etc/pki/rpm-gpg/RPM-GPG-KEY-dome9.com
+    state: present
+
+- name: Purging temporary package from filesystem
+  tags: dome9
+  file:
+    path: "{{ dome9_mktemp.stdout }}"
+    state: absent
   when:
     - dome9_mktemp|success
     - dome9_yum|success
+...
