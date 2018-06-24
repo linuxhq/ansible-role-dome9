@@ -1,10 +1,13 @@
 ---
-dome9_pkg: dome9
-dome9_ver: 0.1.0
-dome9_rel: 1
 dome9_arch: noarch
-dome9_baseurl: "http://repository.dome9.com/centos/5/{{ dome9_arch }}"
-dome9_release: "{{ dome9_pkg }}-{{ dome9_ver }}-{{ dome9_rel }}" 
+dome9_baseurl: "https://s3.amazonaws.com/repository.dome9.com/centos/5/{{ dome9_arch }}"
+dome9_disablerepo: []
+dome9_enablerepo: []
 dome9_fetch: "{{ dome9_baseurl }}/{{ dome9_release }}.{{ dome9_arch }}.rpm"
-dome9_dome9: True
+dome9_packages: []
+dome9_pkg: dome9
+dome9_rel: 1
+dome9_release: "{{ dome9_pkg }}-{{ dome9_ver }}-{{ dome9_rel }}"
+dome9_repository_dome9: false
+dome9_ver: 0.1.0
 ...
